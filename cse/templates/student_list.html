@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student List</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+
+    <div class="container">
+        <h2>Student Form</h2>
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="sid">Student ID:</label>
+                {{ form.sid }}
+            </div>
+
+            <div class="form-group">
+                <label for="name">Name:</label>
+                {{ form.name }}
+            </div>
+
+            <div class="form-group">
+                <label for="branch">Branch:</label>
+                {{ form.branch }}
+            </div>
+
+            <div class="form-group">
+                <label for="subject">Subject:</label>
+                {{ form.subject }}
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+
+        <!-- Search and Filter Section -->
+        <div class="mt-5">
+            <h2>Search Students</h2>
+            <form method="GET">
+                <div class="form-group">
+                    <input type="text" name="search" class="form-control" placeholder="Search by Student ID or Name" value="{{ request.GET.search }}">
+                </div>
+
+                <div class="form-group">
+                    <label for="filter-branch">Filter by Branch:</label>
+                    <select name="branch" class="form-control">
+                        <option value="">All Branches</option>
+                        <option value="cse" {% if request.GET.branch == 'cse' %}selected{% endif %}>Computer Science and Engineering</option>
+                        <option value="ece" {% if request.GET.branch == 'ece' %}selected{% endif %}>Electronics and Communication Engineering</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-secondary">Search</button>
+            </form>
+        </div>
+
+        <!-- Student List Display -->
+        <div class="mt-5">
+            <h2>Student List</h2>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Student ID</th>
+                        <th>Name</th>
+                        <th>Branch</th>
+                        <th>Subject</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                        <tr>
+                            <td>{{ student.sid }}</td>
+                            <td>{{ student.name }}</td>
+                            <td>{{ student.get_branch_display }}</td> <!-- get_branch_display is used to show the readable value of the choice field -->
+                            <td>{{ student.get_subject_display }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="4">No students found</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</body>
+</html>
